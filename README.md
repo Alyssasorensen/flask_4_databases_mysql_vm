@@ -104,5 +104,89 @@ Database Schema:
 My schema allows me to associate patients with the medications they are prescribed. The patient_id and medication_id fields in the patient_medications table create a foreign key relationship with the patients and medications tables, respectively, establishing the connection between patients and their prescribed medications.
 
 ## **Steps and Challenges from the Database Migration Process**
+To integrate your Flask application with the MySQL database using SQLAlchemy and display data from the database on your Flask application, follow these steps:
+
+1. **Install Required Packages**:
+
+   Make sure you have the necessary packages installed. You can install them using pip:
+
+   ```
+   pip install Flask SQLAlchemy pymysql
+   ```
+
+2. **Create a Flask Application**:
+
+   Create a Flask application if you haven't already. You can use a template or create a new one. For this example, let's create a simple Flask application.
+
+   ```python
+   from flask import Flask, render_template
+   from flask_sqlalchemy import SQLAlchemy
+
+   app = Flask(__name__)
+
+   # Configure SQLAlchemy to use your MySQL database
+   app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://your_username:your_password@your_host/your_database_name'
+   db = SQLAlchemy(app)
+
+   @app.route('/')
+   def index():
+       # Query the data from the database (you can modify this query as needed)
+       data = db.session.execute('SELECT * FROM medications').fetchall()
+       return render_template('index.html', data=data)
+
+   if __name__ == '__main__':
+       app.run(debug=True)
+   ```
+
+   Replace `'your_username'`, `'your_password'`, `'your_host'`, and `'your_database_name'` with your actual MySQL database credentials.
+
+3. **Create HTML Template**:
+
+   Create an HTML template (e.g., `templates/index.html`) to display the data from the database.
+
+   ```html
+   <!DOCTYPE html>
+   <html>
+   <head>
+       <title>MySQL Data</title>
+   </head>
+   <body>
+       <h1>MySQL Data</h1>
+       <table border="1">
+           <thead>
+               <tr>
+                   <th>Medication ID</th>
+                   <th>Medication Name</th>
+               </tr>
+           </thead>
+           <tbody>
+               {% for row in data %}
+               <tr>
+                   <td>{{ row.medication_id }}</td>
+                   <td>{{ row.medication_name }}</td>
+               </tr>
+               {% endfor %}
+           </tbody>
+       </table>
+   </body>
+   </html>
+   ```
+
+   This template will display the medication ID and medication name from the `medications` table. Modify it as needed to display the data you want.
+
+4. **Run the Flask Application**:
+
+   Run your Flask application:
+
+   ```
+   python app.py
+   ```
+
+   This will start your Flask server, and you can access it in your web browser at `http://localhost:5000`.
+
+5. **Verify and Take Screenshots**:
+
+   Access your Flask application in your web browser to verify that it's displaying data from the MySQL database correctly. Take screenshots of your working application.
 
 ## **Documented Code Errors and Troubleshooting Attempts**
+Initially I had difficulty receiving the Flask server through the web browser. I kept getting an error message associated with the lines of code from my app.py file and connection.py file. I realized that it was because I was inputting the incorrect information into the code. The information did not match the database information which resulted in an error message. The same error occured in my previous assignment and now I understand that the error messages were coming from the app.py file and the connection.py file.  
